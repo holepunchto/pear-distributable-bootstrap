@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "bare-daemon": "^1.2.1",
+    "bare-fs": "^4.1.6",
+    "hypercore-id-encoding": "^1.3.0",
     "pear-api": "^1.23.1",
     "pear-ipc": "^6.4.0",
     "pear-updater-bootstrap": "^2.0.1",
@@ -29,6 +31,7 @@
   "homepage": "https://github.com/holepunchto/pear-distributable-bootstrap",
   "devDependencies": {
     "brittle": "^3.16.5",
-    "standard": "^17.1.2"
+    "standard": "^17.1.2",
+    "streamx": "^2.22.1"
   }
 }
