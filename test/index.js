@@ -13,6 +13,7 @@ function override (o) {
   for (const [ns, exp] of Object.entries(o)) {
     const id = new URL(require.resolve(ns), 'file:').href
     if (!require.cache[id]) require('..')
+    console.log(require.cache)
     if (!require.cache[id]) throw new Error(ns + ' not a used dep')
     mods[id] = require.cache[id]
     mods[id].exports = exp
