@@ -3,6 +3,7 @@ const test = require('brittle')
 const sodium = require('sodium-native')
 const fs = require('bare-fs')
 const path = require('bare-path')
+const url = require('bare-url')
 const streamx = require('streamx')
 const hypercoreid = require('hypercore-id-encoding')
 const { isWindows } = require('which-runtime')
@@ -11,10 +12,8 @@ const IPC = require('pear-ipc')
 function override (o) {
   const mods = {}
   for (const [ns, exp] of Object.entries(o)) {
-    const id = new URL(require.resolve(ns), 'file:').href
+    const id = url.pathToFileURL(require.resolve(ns)).href
     if (!require.cache[id]) require('..')
-    console.log(id, require.cache[id])
-    console.log(require(ns))
     if (!require.cache[id]) throw new Error(ns + ' not a used dep')
     mods[id] = require.cache[id]
     mods[id].exports = exp
@@ -24,11 +23,6 @@ function override (o) {
   return () => {
     for (const id of Object.keys(require.cache)) delete require.cache[id]
   }
-}
-function rig () {
-  const buf = Buffer.allocUnsafe(4)
-  sodium.randombytes_buf(buf)
-  return path.join(__dirname, 'rig', 'pear')
 }
 function pipeId (s) {
   const buf = Buffer.allocUnsafe(32)
@@ -56,7 +50,7 @@ test('executes pear-updater-bootstrap', async ({ plan, is, alike, teardown }) =>
   const options = {
     appLink: 'pear://keet',
     pearKey: hypercoreid.decode('pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'),
-    pearDir: rig(),
+    pearDir: path.join(__dirname, 'rig', 'pear'),
     useLock: false,
     dhtBootstrap: '127.0.0.1:9999',
     onupdater: () => {}
@@ -92,7 +86,7 @@ test('appLink is required', async ({ exception, plan, teardown }) => {
   teardown(reset)
   const options = {
     pearKey: hypercoreid.decode('pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'),
-    pearDir: rig(),
+    pearDir: path.join(__dirname, 'rig', 'pear'),
     useLock: false,
     dhtBootstrap: '127.0.0.1:9999',
     onupdater: () => {}
@@ -129,7 +123,7 @@ test('appLink must be a pear:// link', async ({ exception, plan, teardown }) => 
   const options = {
     appLink: 'http://invalid-link',
     pearKey: hypercoreid.decode('pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'),
-    pearDir: rig(),
+    pearDir: path.join(__dirname, 'rig', 'pear'),
     useLock: false,
     dhtBootstrap: '127.0.0.1:9999',
     onupdater: () => {}
@@ -166,7 +160,7 @@ test('throws on non-PREFLIGHT bail', async ({ exception, plan, teardown }) => {
   const options = {
     appLink: 'pear://keet',
     pearKey: hypercoreid.decode('pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'),
-    pearDir: rig(),
+    pearDir: path.join(__dirname, 'rig', 'pear'),
     useLock: false,
     dhtBootstrap: '127.0.0.1:9999',
     onupdater: () => {}
@@ -224,7 +218,7 @@ test('tryboots sidecar', async ({ plan, is, alike, teardown }) => {
   const options = {
     appLink: 'pear://keet',
     pearKey: hypercoreid.decode('pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'),
-    pearDir: rig(),
+    pearDir: path.join(__dirname, 'rig', 'pear'),
     useLock: false,
     onupdater: () => {}
   }
@@ -267,7 +261,7 @@ test('tryboots sidecar, passes --dht-bootstrap', async ({ plan, is, alike, teard
   const options = {
     appLink: 'pear://keet',
     pearKey: hypercoreid.decode('pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'),
-    pearDir: rig(),
+    pearDir: path.join(__dirname, 'rig', 'pear'),
     useLock: false,
     dhtBootstrap: '127.0.0.1:9999',
     onupdater: () => {}
@@ -290,7 +284,7 @@ test('calls ipc.run', async ({ plan, is, alike, teardown }) => {
   const options = {
     appLink: 'pear://keet',
     pearKey: hypercoreid.decode('pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'),
-    pearDir: rig(),
+    pearDir: path.join(__dirname, 'rig', 'pear'),
     useLock: false,
     dhtBootstrap: '127.0.0.1:9999',
     onupdater: () => {}
@@ -330,7 +324,7 @@ test('onstatus', async ({ plan, is, alike, teardown }) => {
   const options = {
     appLink: 'pear://keet',
     pearKey: hypercoreid.decode('pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'),
-    pearDir: rig(),
+    pearDir: path.join(__dirname, 'rig', 'pear'),
     useLock: false,
     dhtBootstrap: '127.0.0.1:9999',
     onupdater: () => {},

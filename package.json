@@ -17,6 +17,7 @@
     "pear-ipc": "^6.4.0",
     "pear-updater-bootstrap": "^2.0.1",
     "sodium-native": "^5.0.6",
+    "unix-path-resolve": "^1.0.2",
     "which-runtime": "^1.3.0"
   },
   "repository": {
