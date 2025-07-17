@@ -11,7 +11,7 @@ npm install pear-distributable-bootstrap
 ``` js
 import bootstrap from 'pear-distributable-bootstrap'
 
-await bootstrap({ pearKey, pearDir, appLink, useLock, bootstrap, onupdater, onstatus })
+await bootstrap({ pearKey, pearDir, appLink, useLock, dhtBootstrap, onupdater, onstatus })
 ```
 
 ## License
