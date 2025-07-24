@@ -3,7 +3,7 @@ const bootstrap = require('..')
 
 console.log('Bootstrapping...')
 bootstrap({
-  pearKey: hypercoreid.decode('pqbzjhqyonxprx8hghxexnmctw75mr91ewqw5dxe1zmntfyaddqy'), // production build
+  pearKey: hypercoreid.decode('dhpc5npmqkansx38uh18h3uwpdp6g9ukozrqyc4irbhwriedyeho'),
   pearDir: __dirname,
-  appLink: 'pear://runtime'
+  appLink: 'pear://rbw6fbxorqgjgyitworh3f73utc5cu7sczhptn64oonbznuojiao'
 })
