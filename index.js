@@ -47,7 +47,7 @@ async function bootstrap (opts = {}) {
 
   })
   await ipc.ready()
-  const stream = ipc.run({ link: appLink, flags: { preflight: true } })
+  const stream = ipc.run({ link: appLink, flags: { preflight: true, trusted: true } })
   const result = await opwait(stream, onstatus)
   await ipc.close()
   const bail = result?.bail ?? ERR_INTERNAL_ERROR('Expected PREFLIGHT bail')

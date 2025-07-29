@@ -3,3 +3,8 @@ sandbox.js
 sandbox
 coverage
 package-lock.json
+corestores/
+assets/
+by-dkey/
+current
+lock
