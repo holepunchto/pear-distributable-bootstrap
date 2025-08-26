@@ -1,6 +1,6 @@
 {
   "name": "pear-distributable-bootstrap",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Pear Application Distributable Bootstrapper",
   "main": "index.js",
   "files": [
