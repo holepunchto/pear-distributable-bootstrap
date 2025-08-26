@@ -3,8 +3,8 @@ const daemon = require('bare-daemon')
 const path = require('bare-path')
 const sodium = require('sodium-native')
 const { isWindows } = require('which-runtime')
-const opwait = require('pear-api/opwait')
-const { ERR_OPERATION_FAILED, ERR_INTERNAL_ERROR, ERR_INVALID_INPUT } = require('pear-api/errors')
+const opwait = require('pear-opwait')
+const { ERR_OPERATION_FAILED, ERR_INTERNAL_ERROR, ERR_INVALID_INPUT } = require('pear-errors')
 const updaterBootstrap = require('pear-updater-bootstrap')
 
 function flagifyDhtBootstrap (input) {
