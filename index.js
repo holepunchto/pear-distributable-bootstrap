@@ -35,23 +35,30 @@ async function bootstrap (opts = {}) {
     return { host, port: int }
   })
   const { pearKey, pearDir, appLink, useLock, onupdater, onstatus } = opts
-  await updaterBootstrap(pearKey, pearDir, { lock: useLock, bootstrap: dhtBootstrap, onupdater })
-  if (!appLink) throw new ERR_INVALID_INPUT('appLink is required')
-  if (appLink.startsWith('pear:') === false) throw new ERR_INVALID_INPUT('appLink must be pear:// link')
-  const runtime = path.join(pearDir, 'current', 'by-arch', require.addon.host, 'bin', 'pear-runtime' + (isWindows ? '.exe' : ''))
-  const { Client } = require('pear-ipc')
-  const ipc = new Client({
-    lock: path.join(pearDir, 'corestores', 'platform', 'db', 'LOCK'),
-    connect: () => { daemon.spawn(runtime, args, { cwd: pearDir }) },
-    socketPath: isWindows ? `\\\\.\\pipe\\pear-${pipeId(pearDir)}` : `${pearDir}/pear.sock`
+  await updaterBootstrap(pearKey, pearDir, {
+    lock: useLock,
+    bootstrap: dhtBootstrap,
+    onupdater,
+    async onapply (swap) {
+      if (!appLink) throw new ERR_INVALID_INPUT('appLink is required')
+      if (appLink.startsWith('pear:') === false) throw new ERR_INVALID_INPUT('appLink must be pear:// link')
+      const runtime = path.join(swap, 'by-arch', require.addon.host, 'bin', 'pear-runtime' + (isWindows ? '.exe' : ''))
+      const { Client } = require('pear-ipc')
+      const ipc = new Client({
+        lock: path.join(pearDir, 'corestores', 'platform', 'db', 'LOCK'),
+        connect: () => { daemon.spawn(runtime, args, { cwd: pearDir }) },
+        socketPath: isWindows ? `\\\\.\\pipe\\pear-${pipeId(pearDir)}` : `${pearDir}/pear.sock`
 
+      })
+      await ipc.ready()
+      const stream = ipc.run({ link: appLink, flags: { preflight: true, trusted: true } })
+      const result = await opwait(stream, onstatus)
+      await ipc.close()
+      const bail = result?.bail ?? ERR_INTERNAL_ERROR('Expected PREFLIGHT bail')
+      if (bail.code !== 'PREFLIGHT') throw ERR_OPERATION_FAILED(bail.stack ?? bail.message ?? bail.code, bail.info)
+    }
   })
-  await ipc.ready()
-  const stream = ipc.run({ link: appLink, flags: { preflight: true, trusted: true } })
-  const result = await opwait(stream, onstatus)
-  await ipc.close()
-  const bail = result?.bail ?? ERR_INTERNAL_ERROR('Expected PREFLIGHT bail')
-  if (bail.code !== 'PREFLIGHT') throw ERR_OPERATION_FAILED(bail.stack ?? bail.message ?? bail.code, bail.info)
+
 }
 
 module.exports = bootstrap
